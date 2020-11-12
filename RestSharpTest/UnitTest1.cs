@@ -105,5 +105,30 @@ namespace RestSharpTest
                 System.Console.WriteLine(response.Content);
             });
         }
+        /// <summary>
+        /// UC 24:
+        /// PUT api will update contact FirstName and State in the json file
+        /// </summary>
+        [TestMethod]
+        public void OnCallingPUTApi_ShouldUpdateContact()
+        {
+            //Arrange
+            RestRequest request = new RestRequest("/contacts/1", Method.PUT);
+            JObject jObjectBody = new JObject();
+            jObjectBody.Add("FirstName", "Peter");
+            jObjectBody.Add("State", "Texas");
+
+            request.AddParameter("application/json", jObjectBody, ParameterType.RequestBody);
+
+            //Act
+            IRestResponse response = client.Execute(request);
+
+            //Assert
+            Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
+            Contacts dataResponse = JsonConvert.DeserializeObject<Contacts>(response.Content);
+            Assert.AreEqual("Peter", dataResponse.FirstName);
+            Assert.AreEqual("Texas", dataResponse.State);
+            System.Console.WriteLine(response.Content);
+        }
     }
 }
